@@ -1,0 +1,15 @@
+Install Express
+
+npm init -y
+npm install express
+
+
+
+
+Install MongoDB
+
+Download and install MongoDB from MongoDB's official website.
+
+Download and install mongosh from MongoDB's official website.
+
+Open a terminal and run mongosh to connect to your local MongoDB server.

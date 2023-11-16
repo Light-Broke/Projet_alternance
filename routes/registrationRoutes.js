@@ -1,5 +1,7 @@
 const express = require('express');
 const Registration = require('../models/registration');
+const Event = require('../models/event');
+const User = require('../models/user');
 const router = express.Router();
 
 // Create a new registration
@@ -35,6 +37,44 @@ router.get('/:id', async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+// Get a registration by User ID
+router.get('/byuserid', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const registrations = await Registration.find({ userId }).populate('eventId').populate('userId');
+    res.send(registrations);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// Get a registration by Event ID
+router.get('/byeventid', async (req, res) => {
+  try {
+    const { eventId } = req.query;
+    const registrations = await Registration.find({ eventId }).populate('eventId').populate('userId');
+    res.send(registrations);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// Get a registration by Event Title or User Email
+router.get('/byeventtitleoruseremail', async (req, res) => {
+  try {
+    const { eventTitle, userEmail } = req.query;
+    const event = await Event.findOne({ title: eventTitle });
+    const user = await User.findOne({ email: userEmail });
+    const registrations = await Registration.find({
+      $or: [{ eventId: event ? event._id : null }, { userId: user ? user._id : null }]
+    }).populate('eventId').populate('userId');
+    res.send(registrations);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 
 // Update a registration
 router.put('/:id', async (req, res) => {

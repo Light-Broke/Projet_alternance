@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
 // Get all users
 router.get('/', async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select('-password');
     res.send(users);
   } catch (error) {
     res.status(500).send(error);
@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 router.get('/byname', async (req, res) => {
   try {
     const { firstName, lastName } = req.query;
-    const user = await User.findOne({ firstName, lastName });
+    const user = await User.findOne({ firstName, lastName }).select('-password');
     if (!user) {
       return res.status(404).send('User not found');
     }
@@ -40,7 +40,7 @@ router.get('/byname', async (req, res) => {
 // Get a user by ID
 router.get('/:id', async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).select('-password');
     if (!user) {
       return res.status(404).send();
     }
@@ -49,6 +49,22 @@ router.get('/:id', async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+
+// Get a user by Email
+router.get('/byemail', async (req, res) => {
+  try {
+    const { email } = req.query;
+    const user = await User.findOne({ email }).select('-password');
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    res.send(user);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 
 // Update a user
 router.put('/:id', async (req, res) => {

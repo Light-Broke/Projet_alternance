@@ -76,4 +76,21 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Additional feature: When creating an event, link it to a user
+router.post('/', async (req, res) => {
+  try {
+    const { userId, ...eventData } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    const event = new Event({ ...eventData, createdBy: user._id });
+    const result = await event.save();
+    res.status(201).send(result);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+
 module.exports = router;

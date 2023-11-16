@@ -20,9 +20,9 @@ db.once('open', function() {
 });
 
 
-app.use('/', userRoute);
-app.use('/', eventRoute);
-app.use('/', assocUserEventRoute);
+app.use('/api', userRoute);
+app.use('/api', eventRoute);
+app.use('/api', assocUserEventRoute);
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
